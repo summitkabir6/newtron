@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+data/STEW/*.csv
+data/stew_features_cache.json

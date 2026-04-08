@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Frontend build
+frontend/dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Secrets — never commit
+.env
+.env.local
+backend/.env
+
+# STEW dataset (large); see backend/data/STEW/README.md
+backend/data/STEW/*.csv
+backend/data/stew_features_cache.json
+
+# Local tooling
+.claude/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
