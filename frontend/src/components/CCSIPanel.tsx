@@ -12,9 +12,9 @@ export const CCSIPanel: React.FC<Props> = ({ ccsi }) => {
 
   return (
     <div style={{
-      background: '#fff',
-      border: `1px solid ${ccsi.color}44`,
-      borderRadius: 10,
+      background: '#d2d2d2',
+      border: `1px solid #b4b4b4`,
+      borderRadius: 6,
       overflow: 'hidden',
       fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
     }}>
@@ -24,32 +24,32 @@ export const CCSIPanel: React.FC<Props> = ({ ccsi }) => {
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '10px 14px',
-        borderBottom: '1px solid #f1f5f9',
-        background: '#fafbfc',
+        borderBottom: '1px solid #b4b4b4',
+        background: '#d2d2d2',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ fontSize: 10, fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.1em' }}>
+          <span style={{ fontSize: 10, fontWeight: 700, color: '#787878', textTransform: 'uppercase', letterSpacing: '.14em' }}>
             CCSI
           </span>
-          <span style={{ fontSize: 10, color: '#cbd5e1' }}>·</span>
-          <span style={{ fontSize: 10, color: '#94a3b8' }}>Crew Cognitive State Index</span>
+          <span style={{ fontSize: 10, color: '#888' }}>·</span>
+          <span style={{ fontSize: 10, color: '#787878' }}>Crew Cognitive State Index</span>
         </div>
         {isRelief && (
           <span style={{
-            fontSize: 10, fontWeight: 600,
-            background: '#fef2f2', color: '#dc2626',
-            border: '1px solid #fecaca',
-            padding: '2px 8px', borderRadius: 20,
+            fontSize: 10, fontWeight: 700,
+            background: '#7f1d1d', color: '#fca5a5',
+            border: '1px solid #991b1b',
+            padding: '2px 8px', borderRadius: 4, textTransform: 'uppercase', letterSpacing: '0.06em',
           }}>
             Relief Recommended
           </span>
         )}
         {isCompound && !isRelief && (
           <span style={{
-            fontSize: 10, fontWeight: 600,
-            background: '#fff7ed', color: '#c2410c',
-            border: '1px solid #fed7aa',
-            padding: '2px 8px', borderRadius: 20,
+            fontSize: 10, fontWeight: 700,
+            background: '#78350f', color: '#fde68a',
+            border: '1px solid #92400e',
+            padding: '2px 8px', borderRadius: 4, textTransform: 'uppercase', letterSpacing: '0.06em',
           }}>
             Compound Risk Active
           </span>
@@ -63,7 +63,7 @@ export const CCSIPanel: React.FC<Props> = ({ ccsi }) => {
           <div style={{ position: 'relative', width: 72, height: 72 }}>
             <svg width="72" height="72" viewBox="0 0 72 72">
               {/* Track */}
-              <circle cx="36" cy="36" r="28" fill="none" stroke="#f1f5f9" strokeWidth="6" />
+              <circle cx="36" cy="36" r="28" fill="none" stroke="#b4b4b4" strokeWidth="6" />
               {/* Fill */}
               <circle
                 cx="36" cy="36" r="28"
@@ -84,7 +84,7 @@ export const CCSIPanel: React.FC<Props> = ({ ccsi }) => {
               <span style={{ fontSize: 18, fontWeight: 700, color: ccsi.color, lineHeight: 1 }}>
                 {scoreInt}
               </span>
-              <span style={{ fontSize: 9, color: '#94a3b8', marginTop: 1 }}>/ 100</span>
+              <span style={{ fontSize: 9, color: '#787878', marginTop: 1 }}>/ 100</span>
             </div>
           </div>
 
@@ -93,11 +93,11 @@ export const CCSIPanel: React.FC<Props> = ({ ccsi }) => {
             <div style={{ fontSize: 16, fontWeight: 700, color: ccsi.color, marginBottom: 2 }}>
               {ccsi.level}
             </div>
-            <div style={{ fontSize: 11, color: '#64748b', marginBottom: 8, lineHeight: 1.5 }}>
+            <div style={{ fontSize: 11, color: '#2a2a2a', marginBottom: 8, lineHeight: 1.5 }}>
               {ccsi.description}
             </div>
-            <div style={{ fontSize: 11, color: '#94a3b8', lineHeight: 1.5 }}>
-              <span style={{ color: '#cbd5e1' }}>Driver: </span>
+            <div style={{ fontSize: 11, color: '#787878', lineHeight: 1.5 }}>
+              <span style={{ color: '#888' }}>Driver: </span>
               {ccsi.risk_driver}
             </div>
           </div>
@@ -108,11 +108,11 @@ export const CCSIPanel: React.FC<Props> = ({ ccsi }) => {
           <div style={{
             display: 'flex', alignItems: 'center', gap: 8,
             padding: '7px 10px',
-            background: '#fff7ed',
-            border: '1px solid #fed7aa',
-            borderRadius: 7,
+            background: '#78350f',
+            border: '1px solid #92400e',
+            borderRadius: 4,
             marginBottom: 10,
-            fontSize: 11, color: '#92400e',
+            fontSize: 11, color: '#fde68a',
           }}>
             <span style={{ fontSize: 14 }}>⚠</span>
             <span>
@@ -123,15 +123,15 @@ export const CCSIPanel: React.FC<Props> = ({ ccsi }) => {
 
         {/* Individual contributions */}
         <div style={{ marginBottom: 10 }}>
-          <div style={{ fontSize: 10, color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 6 }}>
+          <div style={{ fontSize: 10, color: '#787878', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: 6, fontWeight: 700 }}>
             Individual contributions
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             {ccsi.individual_contributions.map(op => (
               <div key={op.operator_id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 7, height: 7, borderRadius: '50%', background: op.color, flexShrink: 0 }} />
-                <span style={{ fontSize: 11, color: '#334155', width: 100, flexShrink: 0 }}>{op.name}</span>
-                <div style={{ flex: 1, height: 4, background: '#f1f5f9', borderRadius: 2, overflow: 'hidden' }}>
+                <span style={{ fontSize: 11, color: '#080808', width: 100, flexShrink: 0 }}>{op.name}</span>
+                <div style={{ flex: 1, height: 4, background: '#b4b4b4', borderRadius: 2, overflow: 'hidden' }}>
                   <div style={{
                     height: '100%', borderRadius: 2,
                     background: op.color,
@@ -139,7 +139,7 @@ export const CCSIPanel: React.FC<Props> = ({ ccsi }) => {
                     transition: 'width 0.5s',
                   }} />
                 </div>
-                <span style={{ fontSize: 10, color: op.color, fontWeight: 600, minWidth: 60, textAlign: 'right', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: 10, color: op.color, fontWeight: 700, minWidth: 60, textAlign: 'right', textTransform: 'uppercase' }}>
                   {op.state.replace('_', ' ')}
                 </span>
               </div>
@@ -150,7 +150,7 @@ export const CCSIPanel: React.FC<Props> = ({ ccsi }) => {
         {/* CCSI Forecast */}
         {ccsi.forecast.length > 0 && (
           <div>
-            <div style={{ fontSize: 10, color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 6 }}>
+            <div style={{ fontSize: 10, color: '#787878', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: 6, fontWeight: 700 }}>
               Crew forecast
             </div>
             <div style={{ display: 'flex', gap: 6 }}>
@@ -158,13 +158,13 @@ export const CCSIPanel: React.FC<Props> = ({ ccsi }) => {
                 <div key={f.minutes_ahead} style={{
                   flex: 1, textAlign: 'center',
                   padding: '6px 4px',
-                  background: '#f8fafc',
-                  borderRadius: 7,
-                  border: `1px solid ${f.color}33`,
+                  background: '#bebebe',
+                  borderRadius: 4,
+                  borderBottom: `3px solid ${f.color}`,
                 }}>
-                  <div style={{ fontSize: 9, color: '#94a3b8', marginBottom: 3 }}>+{f.minutes_ahead}m</div>
+                  <div style={{ fontSize: 9, color: '#787878', marginBottom: 3, fontWeight: 700 }}>+{f.minutes_ahead}m</div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: f.color }}>{Math.round(f.score)}</div>
-                  <div style={{ fontSize: 9, color: f.color, fontWeight: 600, textTransform: 'uppercase', marginTop: 2 }}>
+                  <div style={{ fontSize: 9, color: f.color, fontWeight: 700, textTransform: 'uppercase', marginTop: 2 }}>
                     {f.level}
                   </div>
                 </div>

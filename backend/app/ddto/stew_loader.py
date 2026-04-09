@@ -147,10 +147,10 @@ def _load_csv(filepath: Path) -> List[List[float]]:
         with open(filepath, 'r') as f:
             for line in f:
                 line = line.strip()
-                if not line or line.startswith('#') or line.startswith('AF3'):
-                    continue  # Skip header/comments
+                if not line or line.startswith('#'):
+                    continue  # Skip comments
                 try:
-                    values = [float(v) for v in line.split(',')]
+                    values = [float(v) for v in line.split()]
                     if len(values) >= len(CHANNEL_NAMES):
                         samples.append(values[:len(CHANNEL_NAMES)])
                 except ValueError:
@@ -200,7 +200,7 @@ def build_cache() -> Dict:
     for subject_num in range(1, 49):  # STEW has 48 subjects
         for label, suffix in [("low", "lo"), ("high", "hi")]:
             # Try both naming conventions seen in STEW releases
-            for pattern in [f"sub{subject_num:02d}_{suffix}.csv", f"Subject{subject_num:02d}_{suffix}.csv"]:
+            for pattern in [f"sub{subject_num:02d}_{suffix}.txt"]:
                 filepath = STEW_DIR / pattern
                 if filepath.exists():
                     features = _extract_features_from_file(filepath, label)

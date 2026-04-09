@@ -18,27 +18,27 @@ const STATE_DOT: Record<string, string> = {
 }
 
 const STATE_BG: Record<string, string> = {
-  normal:        '#f0fdf4',
-  elevated_load: '#fffbeb',
-  high_load:     '#fff7ed',
-  fatigued:      '#fef2f2',
-  critical:      '#fef2f2',
+  normal:        '#14532d',
+  elevated_load: '#7f1d1d',
+  high_load:     '#7f1d1d',
+  fatigued:      '#7f1d1d',
+  critical:      '#450a0a',
 }
 
 const STATE_BORDER: Record<string, string> = {
-  normal:        '#bbf7d0',
-  elevated_load: '#fde68a',
-  high_load:     '#fed7aa',
-  fatigued:      '#fecaca',
-  critical:      '#fecaca',
+  normal:        '#166534',
+  elevated_load: '#991b1b',
+  high_load:     '#991b1b',
+  fatigued:      '#991b1b',
+  critical:      '#7f1d1d',
 }
 
 const STATE_LABEL: Record<string, string> = {
-  normal:        '#166534',
-  elevated_load: '#92400e',
-  high_load:     '#9a3412',
-  fatigued:      '#991b1b',
-  critical:      '#7f1d1d',
+  normal:        '#4ade80',
+  elevated_load: '#fca5a5',
+  high_load:     '#fca5a5',
+  fatigued:      '#fca5a5',
+  critical:      '#fca5a5',
 }
 
 const STATE_TEXT: Record<string, string> = {
@@ -49,9 +49,9 @@ const STATE_TEXT: Record<string, string> = {
   critical:      'Critical',
 }
 
-function sc(state: string)      { return STATE_DOT[state]    ?? '#94a3b8' }
-function sbg(state: string)     { return STATE_BG[state]     ?? '#f8fafc' }
-function sborder(state: string) { return STATE_BORDER[state] ?? '#e2e8f0' }
+function sc(state: string)      { return STATE_DOT[state]    ?? '#787878' }
+function sbg(state: string)     { return STATE_BG[state]     ?? '#bebebe' }
+function sborder(state: string) { return STATE_BORDER[state] ?? '#b4b4b4' }
 function slabel(state: string)  { return STATE_LABEL[state]  ?? '#475569' }
 function stext(state: string)   { return STATE_TEXT[state]   ?? state.replace(/_/g, ' ') }
 
@@ -64,7 +64,7 @@ const FORECAST_COLORS: Record<string, string> = {
   fatigued:      '#dc2626',
   critical:      '#7c3aed',
 }
-const fsc = (state: string) => FORECAST_COLORS[state] ?? '#94a3b8'
+const fsc = (state: string) => FORECAST_COLORS[state] ?? '#787878'
 
 // ── Biometric “about” copy (shown when Details is selected) ─────────────────
 
@@ -125,6 +125,37 @@ function paramStatus(key: string, val: number): { label: string; color: string }
       return { label: 'LOW',    color: '#22c55e' }
     default:
       return { label: 'OK', color: '#22c55e' }
+  }
+}
+
+function metricThresholds(key: string): { low?: number; high?: number } {
+  switch (key) {
+    case 'theta':   return { high: 0.45 }
+    case 'alpha':   return { low: 0.25 }
+    case 'beta':    return { low: 0.3 }
+    case 'perclos': return { high: 0.2 }
+    case 'blink':   return { low: 12 }
+    case 'error':   return { high: 0.1 }
+    default:        return {}
+  }
+}
+
+function metricActionHint(key: string): string {
+  switch (key) {
+    case 'theta':
+      return 'Sustained high theta suggests rising workload; consider redistributing complex tasks.'
+    case 'alpha':
+      return 'If alpha remains reduced for several minutes, prompt a short recovery break and workload check.'
+    case 'beta':
+      return 'A persistent beta drop can indicate disengagement or fatigue; verify task attention and pacing.'
+    case 'perclos':
+      return 'Elevated PERCLOS indicates ocular fatigue risk; prioritize alertness checks and relief rotation.'
+    case 'blink':
+      return 'Reduced blink rate may reflect visual tunneling; cue gaze reset and display scan behaviors.'
+    case 'error':
+      return 'When error probability stays elevated, increase cross-verification and supervision frequency.'
+    default:
+      return 'Monitor this metric trend alongside task demand to guide intervention timing.'
   }
 }
 
@@ -198,8 +229,8 @@ function futureColorForLoad(load: number): string {
 }
 
 const FORECAST_BLUE = 'rgb(37,99,235)'
-const FORECAST_GREY_STROKE = '#64748b'
-const FORECAST_GREY_FILL = 'rgba(100, 116, 139, 0.14)'
+const FORECAST_GREY_STROKE = '#888888'
+const FORECAST_GREY_FILL = 'rgba(136, 136, 136, 0.18)'
 
 // ── Demo scenarios ────────────────────────────────────────────────────────────
 
@@ -217,15 +248,16 @@ function StatCard({ label, value, delta, deltaColor }: {
   const tx = 'color 0.35s ease'
   return (
     <div style={{
-      background: '#fff', border: '1px solid #e2e8f0', borderRadius: 7,
+      background: '#d2d2d2', border: '1px solid #b4b4b4', borderRadius: 6,
+      borderBottom: '2px solid #22c55e',
       padding: '7px 10px', display: 'flex', alignItems: 'center',
-      justifyContent: 'space-between', boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+      justifyContent: 'space-between',
     }}>
       <div>
-        <div style={{ fontSize: 10, color: '#64748b', fontWeight: 600, marginBottom: 3 }}>{label}</div>
-        <div style={{ fontSize: 14, fontWeight: 600, color: '#1e293b', fontFamily: 'var(--font-mono)', transition: tx }}>{value}</div>
+        <div style={{ fontSize: 10, color: '#787878', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 3 }}>{label}</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: '#080808', fontFamily: 'var(--font-mono)', transition: tx }}>{value}</div>
       </div>
-      <div style={{ fontSize: 11, fontWeight: 600, color: deltaColor, fontFamily: 'var(--font-head)', transition: tx }}>{delta}</div>
+      <div style={{ fontSize: 11, fontWeight: 700, color: deltaColor, fontFamily: 'var(--font-head)', transition: tx }}>{delta}</div>
     </div>
   )
 }
@@ -234,7 +266,7 @@ function StatCard({ label, value, delta, deltaColor }: {
 
 const TREND_CONFIG = {
   degrading: { symbol: '↑', label: 'Rising',     color: '#ef4444' },
-  stable:    { symbol: '→', label: 'Stable',      color: '#94a3b8' },
+  stable:    { symbol: '→', label: 'Stable',      color: '#787878' },
   improving: { symbol: '↓', label: 'Recovering',  color: '#22c55e' },
 }
 
@@ -263,12 +295,17 @@ interface DDTODashboardProps {
 }
 
 export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }) => {
+  type ExpandRect = { left: number; top: number; width: number; height: number }
   const [payload, setPayload] = useState<LivePayload | null>(null)
 
   const [activeScenario, setActiveScenario] = useState<string | null>(null)
   const [scenarioStatus, setScenarioStatus] = useState('')
-  /** Per biometric tile: chevron toggles full metric description */
-  const [bioExpanded, setBioExpanded] = useState<Record<string, boolean>>({})
+  /** Active biometric metric in enlarged modal view */
+  const [expandedMetric, setExpandedMetric] = useState<string | null>(null)
+  const [expandedFromRect, setExpandedFromRect] = useState<ExpandRect | null>(null)
+  const [expandedAnimatingIn, setExpandedAnimatingIn] = useState(false)
+  const [expandedAnimatingOut, setExpandedAnimatingOut] = useState(false)
+  const tileRefs = useRef<Record<string, HTMLDivElement | null>>({})
 
   const prevExplanationRef  = useRef<string>('')
   const [claudeTs, setClaudeTs]     = useState<number>(Date.now())
@@ -301,6 +338,16 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
     }, 1000)
     return () => clearInterval(id)
   }, [claudeTs])
+
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const sync = () => setPrefersReducedMotion(media.matches)
+    sync()
+    media.addEventListener('change', sync)
+    return () => media.removeEventListener('change', sync)
+  }, [])
 
   const handleScenario = async (scenarioId: string) => {
     if (activeScenario === scenarioId) {
@@ -335,7 +382,8 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
     return (
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        height: '100%', color: '#94a3b8', fontFamily: 'var(--font-mono)', fontSize: 13,
+        height: '100%', color: '#787878', fontFamily: 'var(--font-mono)', fontSize: 13,
+        background: '#c6c6c6',
       }}>
         Connecting to DDTO engine…
       </div>
@@ -372,12 +420,13 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
 
   const fx = (i: number) => CHART_LEFT + (i / 4) * (CHART_RIGHT - CHART_LEFT)
   const seriesLoads = [pastLoad, cur, f5, f10, f15]
+
   const forecastPoints = [
-    { x: fx(0), load: pastLoad, kind: 'past' as const },
-    { x: fx(1), load: cur, kind: 'now' as const },
+    { x: fx(0), load: seriesLoads[0] ?? 0, kind: 'past' as const },
+    { x: fx(1), load: seriesLoads[1] ?? 0, kind: 'now' as const },
     ...([0, 1, 2] as const).map(i => ({
       x:    fx(i + 2),
-      load: [f5, f10, f15][i],
+      load: seriesLoads[i + 2] ?? 0,
       kind: 'future' as const,
     })),
   ]
@@ -449,8 +498,45 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
 
   const isPaused = payload?.simulation_paused ?? true
 
+  const handleExpandMetric = (metricKey: string) => {
+    const tileEl = tileRefs.current[metricKey]
+    const r = tileEl?.getBoundingClientRect()
+    if (r) {
+      setExpandedFromRect({ left: r.left, top: r.top, width: r.width, height: r.height })
+    } else {
+      setExpandedFromRect(null)
+    }
+    setExpandedMetric(metricKey)
+    if (prefersReducedMotion) {
+      setExpandedAnimatingIn(true)
+      setExpandedAnimatingOut(false)
+      return
+    }
+    setExpandedAnimatingOut(false)
+    setExpandedAnimatingIn(false)
+    window.requestAnimationFrame(() => setExpandedAnimatingIn(true))
+  }
+
+  const handleCloseExpanded = () => {
+    if (!expandedMetric) return
+    if (prefersReducedMotion) {
+      setExpandedMetric(null)
+      setExpandedFromRect(null)
+      setExpandedAnimatingIn(false)
+      setExpandedAnimatingOut(false)
+      return
+    }
+    setExpandedAnimatingOut(true)
+    setExpandedAnimatingIn(false)
+    window.setTimeout(() => {
+      setExpandedMetric(null)
+      setExpandedFromRect(null)
+      setExpandedAnimatingOut(false)
+    }, 320)
+  }
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#f1f5f9', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#c6c6c6', overflow: 'hidden' }}>
       <style>{`
         @keyframes ddto-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
         .ddto-paused-badge { animation: ddto-pulse 1.6s ease-in-out infinite; }
@@ -461,10 +547,10 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
           transition: color 0.35s ease;
         }
         .ddto-tile-accent {
-          transition: border-left-color 0.35s ease, border-color 0.35s ease;
+          transition: border-bottom-color 0.35s ease;
         }
         .ddto-claude-border {
-          transition: border-left-color 0.35s ease;
+          transition: border-bottom-color 0.35s ease;
         }
         .ddto-bio-metric-header {
           display: flex;
@@ -479,16 +565,16 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
           min-width: 72;
           height: 52px;
           min-height: 52px;
-          border-radius: 5px;
+          border-radius: 4px;
           overflow: hidden;
-          background: #fafafa;
+          background: #bebebe;
         }
         .ddto-bio-sparkline-stack > .ddto-bio-sparkline-layer {
           position: absolute;
           inset: 0;
           opacity: 0.9;
         }
-        .ddto-bio-slide-trigger {
+        .ddto-bio-expand-trigger {
           position: absolute;
           top: 2px;
           right: 2px;
@@ -497,72 +583,91 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
           margin: 0;
           padding: 5px;
           cursor: pointer;
-          color: #94a3b8;
-          background: rgba(255, 255, 255, 0.92);
-          border-radius: 5px;
-          box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+          color: #555;
+          background: rgba(180, 180, 180, 0.92);
+          border-radius: 4px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.15);
           display: inline-flex;
           align-items: center;
           justify-content: center;
           line-height: 0;
+          font-size: 12px;
+          font-weight: 700;
           transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .ddto-bio-slide-trigger:hover {
-          color: #475569;
-          background: #fff;
-          box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+        .ddto-bio-expand-trigger:hover {
+          color: #080808;
+          background: rgba(190,190,190,0.98);
+          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
           transform: translateX(1px) scale(1.06);
         }
-        .ddto-bio-slide-trigger:active {
+        .ddto-bio-expand-trigger:active {
           transform: translateX(0) scale(0.96);
         }
-        .ddto-bio-slide-trigger:focus-visible {
-          outline: 2px solid #bfdbfe;
+        .ddto-bio-expand-trigger:focus-visible {
+          outline: 2px solid #22c55e;
           outline-offset: 1px;
         }
-        .ddto-bio-slide-trigger-icon {
-          display: block;
-          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .ddto-bio-slide-trigger[aria-expanded="true"] .ddto-bio-slide-trigger-icon {
-          transform: rotate(180deg);
-        }
-        .ddto-bio-slide-panel {
-          position: absolute;
-          inset: 0;
-          z-index: 2;
-          background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-          border-left: 1px solid #e2e8f0;
-          padding: 7px 9px 7px 10px;
-          overflow-y: auto;
-          overflow-x: hidden;
-          -webkit-overflow-scrolling: touch;
-          transform: translateX(100%);
-          opacity: 0;
-          pointer-events: none;
-          transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.32s ease;
-        }
-        .ddto-bio-slide-panel.ddto-bio-slide-panel--open {
-          transform: translateX(0);
-          opacity: 1;
-          pointer-events: auto;
-        }
       `}</style>
+
+      {/* ── STATUS BAR ─────────────────────────────────────────────────────── */}
+      <div style={{
+        background: '#1a1a1a', borderBottom: '1px solid #222',
+        padding: '5px 16px', flexShrink: 0,
+        display: 'flex', alignItems: 'center', gap: 24,
+      }}>
+        {[
+          {
+            label: 'Plant Risk',
+            value: payload.risk_level.toUpperCase(),
+            color: payload.risk_level === 'high' ? '#fca5a5' : payload.risk_level === 'medium' ? '#fde68a' : '#4ade80',
+          },
+          {
+            label: 'Cognitive State',
+            value: currentState.replace(/_/g, ' ').toUpperCase(),
+            color: currentState === 'normal' ? '#4ade80' : '#fca5a5',
+          },
+          {
+            label: 'Shift Time',
+            value: `${selected.hours_into_shift.toFixed(1)}h`,
+            color: '#e0e0e0',
+          },
+          {
+            label: 'Confidence',
+            value: `${Math.round(pred.confidence * 100)}%`,
+            color: pred.confidence > 0.7 ? '#4ade80' : pred.confidence > 0.5 ? '#fde68a' : '#fca5a5',
+          },
+          {
+            label: 'Signal',
+            value: (selected as unknown as Record<string, unknown>).data_source === 'real' ? 'Real EEG' : 'Synthetic',
+            color: (selected as unknown as Record<string, unknown>).data_source === 'real' ? '#4ade80' : '#9a9a9a',
+          },
+        ].map(item => (
+          <div key={item.label} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 9, color: '#7a7a7a', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
+              {item.label}
+            </span>
+            <span style={{ fontSize: 11, color: item.color, fontWeight: 700, fontFamily: 'var(--font-mono)', letterSpacing: '0.04em' }}>
+              {item.value}
+            </span>
+          </div>
+        ))}
+      </div>
 
       {/* ── COCKPIT HEADER — compact ────────────────────────────────────────── */}
       <div style={{
         display: 'flex', alignItems: 'center', gap: 12,
         padding: '8px 16px',
-        background: '#fff', borderBottom: '1px solid #e2e8f0',
-        flexShrink: 0, boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        background: '#d2d2d2', borderBottom: '1px solid #b4b4b4',
+        flexShrink: 0,
       }}>
         {/* Avatar */}
         <div style={{
-          width: 40, height: 40, borderRadius: '50%',
-          background: '#eff6ff', border: '2px solid #bfdbfe',
+          width: 40, height: 40, borderRadius: 6,
+          background: '#b4b4b4', border: '1px solid #a0a0a0',
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
         }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#3b82f6', fontFamily: 'var(--font-head)' }}>
+          <span style={{ fontSize: 14, fontWeight: 800, color: '#080808', fontFamily: 'var(--font-head)' }}>
             {initials}
           </span>
         </div>
@@ -570,37 +675,37 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
         {/* Name block */}
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
-            <span style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', fontFamily: 'var(--font-head)', lineHeight: 1 }}>
+            <span style={{ fontSize: 18, fontWeight: 800, color: '#080808', fontFamily: 'var(--font-head)', lineHeight: 1 }}>
               {selected.name}
             </span>
             <span className="ddto-state-pill" style={{
-              fontSize: 10, fontWeight: 600,
+              fontSize: 10, fontWeight: 800,
               background: sbg(currentState), color: slabel(currentState),
               border: `1px solid ${sborder(currentState)}`,
-              padding: '2px 10px', borderRadius: 20, letterSpacing: '0.04em',
+              padding: '2px 10px', borderRadius: 4, letterSpacing: '0.06em', textTransform: 'uppercase',
             }}>
               {stext(currentState)}
             </span>
             {selected.scenario_override && (
               <span style={{
-                fontSize: 9, fontWeight: 600,
-                background: '#fff7ed', color: '#9a3412', border: '1px solid #fed7aa',
-                padding: '2px 8px', borderRadius: 20, letterSpacing: '0.04em',
+                fontSize: 9, fontWeight: 700,
+                background: '#78350f', color: '#fde68a', border: '1px solid #92400e',
+                padding: '2px 8px', borderRadius: 4, letterSpacing: '0.04em',
               }}>
                 ▶ {selected.scenario_override.replace(/_/g, ' ')}
               </span>
             )}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 11, color: '#64748b' }}>{loggedInOperator.role}</span>
-            <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: '#94a3b8' }}>{loggedInOperator.badge_id}</span>
+            <span style={{ fontSize: 11, color: '#2a2a2a' }}>{loggedInOperator.role}</span>
+            <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: '#787878' }}>{loggedInOperator.badge_id}</span>
             <span style={{
-              fontSize: 11, fontFamily: 'var(--font-mono)', color: '#3b82f6',
-              background: '#eff6ff', padding: '1px 7px', borderRadius: 4, border: '1px solid #bfdbfe',
+              fontSize: 11, fontFamily: 'var(--font-mono)', color: '#4ade80',
+              background: '#14532d', padding: '1px 7px', borderRadius: 4, border: '1px solid #166534',
             }}>
               Shift: {selected.hours_into_shift.toFixed(1)}h
             </span>
-            <span style={{ fontSize: 10, color: '#94a3b8' }}>
+            <span style={{ fontSize: 10, color: '#787878' }}>
               {selected.experience_years} yrs · Fatigue {fatigueLabel} · Bias {biasLabel}
             </span>
           </div>
@@ -613,9 +718,9 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
           {isPaused && (
             <span className="ddto-paused-badge" style={{
               fontSize: 9, fontWeight: 700, letterSpacing: '0.1em',
-              textTransform: 'uppercase', color: '#c2410c',
-              background: '#fff7ed', border: '1px solid #fed7aa',
-              padding: '2px 8px', borderRadius: 20,
+              textTransform: 'uppercase', color: '#fde68a',
+              background: '#78350f', border: '1px solid #92400e',
+              padding: '2px 8px', borderRadius: 4,
             }}>
               ⏸ PAUSED
             </span>
@@ -625,46 +730,46 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
             style={{
               padding: '3px 11px', fontSize: 9, fontFamily: 'var(--font-head)', fontWeight: 700,
               letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer',
-              border: `1px solid ${isPaused ? '#bbf7d0' : '#e2e8f0'}`,
-              borderRadius: 5,
-              background: isPaused ? '#f0fdf4' : '#f8fafc',
-              color: isPaused ? '#16a34a' : '#64748b',
+              border: `1px solid ${isPaused ? '#166534' : '#b4b4b4'}`,
+              borderRadius: 4,
+              background: isPaused ? '#14532d' : '#bebebe',
+              color: isPaused ? '#4ade80' : '#2a2a2a',
               transition: 'all 0.15s',
             }}
           >
             {isPaused ? '▶ Resume' : '⏸ Pause'}
           </button>
 
-          <div style={{ width: 1, height: 16, background: '#e2e8f0', margin: '0 2px' }} />
+          <div style={{ width: 1, height: 16, background: '#b4b4b4', margin: '0 2px' }} />
 
           <span style={{
-            fontSize: 9, color: '#cbd5e1', textTransform: 'uppercase',
-            letterSpacing: '0.12em', fontFamily: 'var(--font-head)', fontWeight: 600, marginRight: 3,
+            fontSize: 9, color: '#787878', textTransform: 'uppercase',
+            letterSpacing: '0.12em', fontFamily: 'var(--font-head)', fontWeight: 700, marginRight: 3,
           }}>
             Demo
           </span>
           {DEMO_SCENARIOS.map(s => (
             <button key={s.id} onClick={() => handleScenario(s.id)} style={{
-              padding: '3px 9px', fontSize: 9, fontFamily: 'var(--font-head)', fontWeight: 600,
+              padding: '3px 9px', fontSize: 9, fontFamily: 'var(--font-head)', fontWeight: 700,
               letterSpacing: '0.06em', textTransform: 'uppercase',
-              border: `1px solid ${activeScenario === s.id ? s.color : '#e2e8f0'}`,
-              borderRadius: 5,
-              background: activeScenario === s.id ? `${s.color}18` : '#f8fafc',
-              color: activeScenario === s.id ? s.color : '#64748b',
+              border: `1px solid ${activeScenario === s.id ? s.color : '#b4b4b4'}`,
+              borderRadius: 4,
+              background: activeScenario === s.id ? `${s.color}28` : '#bebebe',
+              color: activeScenario === s.id ? s.color : '#2a2a2a',
               cursor: 'pointer', transition: 'all 0.15s',
             }}>
               {activeScenario === s.id ? '■ ' : '▶ '}{s.label}
             </button>
           ))}
           <button onClick={handleReset} style={{
-            padding: '3px 9px', fontSize: 9, fontFamily: 'var(--font-head)', fontWeight: 600,
+            padding: '3px 9px', fontSize: 9, fontFamily: 'var(--font-head)', fontWeight: 700,
             letterSpacing: '0.06em', textTransform: 'uppercase',
-            border: '1px solid #fecaca', borderRadius: 5, background: '#fff', color: '#ef4444', cursor: 'pointer',
+            border: '1px solid #7f1d1d', borderRadius: 4, background: '#7f1d1d', color: '#fca5a5', cursor: 'pointer',
           }}>
             ↺ Reset
           </button>
           {scenarioStatus && (
-            <span style={{ fontSize: 9, color: '#3b82f6', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: 9, color: '#22c55e', fontFamily: 'var(--font-mono)' }}>
               {scenarioStatus}
             </span>
           )}
@@ -686,13 +791,12 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
 
           {/* ── 15-min Cognitive Forecast ─────────────────────────────────── */}
           <div style={{
-            background: '#fff', border: '1px solid #e2e8f0', borderRadius: 10,
+            background: '#d2d2d2', border: '1px solid #b4b4b4', borderRadius: 6,
             padding: '10px 10px 8px', flexShrink: 0,
-            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
           }}>
             <div style={{
-              fontSize: 12, color: '#1e293b', textTransform: 'uppercase',
-              letterSpacing: '0.1em', fontFamily: 'var(--font-head)', fontWeight: 700, marginBottom: 10,
+              fontSize: 10, color: '#787878', textTransform: 'uppercase',
+              letterSpacing: '0.14em', fontFamily: 'var(--font-head)', fontWeight: 700, marginBottom: 10,
             }}>
               15-min Cognitive Forecast
             </div>
@@ -700,38 +804,38 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
             {/* Summary stats row — compact */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6, marginBottom: 10 }}>
               {/* Current load */}
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 7, padding: '6px 10px' }}>
-                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>
+              <div style={{ background: '#bebebe', borderRadius: 4, padding: '6px 10px', borderBottom: '3px solid #22c55e' }}>
+                <div style={{ fontSize: 10, color: '#787878', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>
                   Current load
                 </div>
                 <div className="ddto-stat-pct" style={{ fontSize: 17, fontWeight: 700, color: fsc(currentState), fontFamily: 'var(--font-mono)', lineHeight: 1, marginBottom: 2 }}>
                   {Math.round(curLoad * 100)}%
                 </div>
-                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 500, textTransform: 'capitalize' }}>
+                <div style={{ fontSize: 10, color: '#2a2a2a', fontWeight: 600, textTransform: 'capitalize' }}>
                   {currentState.replace(/_/g, ' ')}
                 </div>
               </div>
               {/* Peak forecast */}
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 7, padding: '6px 10px' }}>
-                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>
+              <div style={{ background: '#bebebe', borderRadius: 4, padding: '6px 10px', borderBottom: '3px solid #888' }}>
+                <div style={{ fontSize: 10, color: '#787878', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>
                   Peak forecast
                 </div>
                 <div className="ddto-stat-pct" style={{ fontSize: 17, fontWeight: 700, color: fsc(peakForecast?.predicted_state ?? 'normal'), fontFamily: 'var(--font-mono)', lineHeight: 1, marginBottom: 2 }}>
                   {Math.round(peakLoadSmoothed * 100)}%
                 </div>
-                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 500, textTransform: 'capitalize' }}>
+                <div style={{ fontSize: 10, color: '#2a2a2a', fontWeight: 600, textTransform: 'capitalize' }}>
                   {(peakForecast?.predicted_state ?? 'normal').replace(/_/g, ' ')}
                 </div>
               </div>
               {/* Trend */}
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 7, padding: '6px 10px' }}>
-                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>
+              <div style={{ background: '#bebebe', borderRadius: 4, padding: '6px 10px', borderBottom: '3px solid #888' }}>
+                <div style={{ fontSize: 10, color: '#787878', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>
                   Trend
                 </div>
                 <div className="ddto-stat-pct" style={{ fontSize: 17, fontWeight: 700, color: trendInfo.color, fontFamily: 'var(--font-mono)', lineHeight: 1, marginBottom: 2 }}>
                   {trendInfo.symbol}
                 </div>
-                <div className="ddto-stat-pct" style={{ fontSize: 10, fontWeight: 600, color: trendInfo.color }}>{trendInfo.label}</div>
+                <div className="ddto-stat-pct" style={{ fontSize: 10, fontWeight: 700, color: trendInfo.color }}>{trendInfo.label}</div>
               </div>
             </div>
 
@@ -756,11 +860,11 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
                   <g key={pct}>
                     <line
                       x1={CHART_LEFT} y1={y} x2={CHART_RIGHT} y2={y}
-                      stroke="#e2e8f0" strokeWidth={pct === 0 ? 1 : 0.75}
+                      stroke="#b4b4b4" strokeWidth={pct === 0 ? 1 : 0.75}
                     />
                     <text
                       x={Y_LABEL_X} y={y + 2}
-                      textAnchor="end" fill="#475569" fontSize={7}
+                      textAnchor="end" fill="#787878" fontSize={7}
                       fontFamily="ui-monospace, monospace" style={{ fontVariantNumeric: 'tabular-nums' }}
                     >
                       {pct}%
@@ -789,62 +893,75 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
                 const strokeC = pt.kind === 'past'
                   ? FORECAST_GREY_STROKE
                   : pt.kind === 'now'
-                    ? FORECAST_BLUE
+                    ? '#22c55e'
                     : futureColorForLoad(pt.load)
-                const fillC = pt.kind === 'past' ? '#f8fafc' : pt.kind === 'now' ? '#fff' : '#fff'
+                const fillC = pt.kind === 'past' ? '#bebebe' : pt.kind === 'now' ? '#14532d' : '#d2d2d2'
                 return (
                   <g key={i}>
-                    <circle cx={pt.x} cy={y} r={3} fill={fillC} stroke={strokeC} strokeWidth={1.25} />
-                    <text
-                      x={pt.x} y={87} textAnchor="middle"
-                      fill={pt.kind === 'now' ? '#334155' : '#475569'}
-                      fontSize={7} fontWeight={pt.kind === 'now' ? 700 : 600}
-                      fontFamily="system-ui, sans-serif"
-                    >
-                      {FORECAST_X_LABELS[i]}
-                    </text>
+                    <circle cx={pt.x} cy={y} r={pt.kind === 'now' ? 4 : 3} fill={fillC} stroke={strokeC} strokeWidth={pt.kind === 'now' ? 1.75 : 1.25} />
+                    {pt.kind === 'now' && (
+                      <text
+                        x={pt.x} y={y - 7} textAnchor="middle"
+                        fill="#4ade80" fontSize={7} fontWeight={700}
+                        fontFamily="ui-monospace, monospace"
+                      >
+                        {Math.round(pt.load * 100)}%
+                      </text>
+                    )}
                   </g>
                 )
               })}
+
+              {forecastPoints.map((pt, i) => (
+                <text
+                  key={i}
+                  x={pt.x}
+                  y={87}
+                  textAnchor="middle"
+                  fill={pt.kind === 'now' ? '#080808' : '#2a2a2a'}
+                  fontSize={7}
+                  fontWeight={pt.kind === 'now' ? 700 : 600}
+                  fontFamily="system-ui, sans-serif"
+                >
+                  {FORECAST_X_LABELS[i]}
+                </text>
+              ))}
             </svg>
           </div>
 
           {/* ── Biometric Parameters ─────────────────────────────────────── */}
           <div style={{
-            background: '#fff', border: '1px solid #e2e8f0', borderRadius: 10,
+            background: '#d2d2d2', border: '1px solid #b4b4b4', borderRadius: 6,
             padding: '10px 10px 8px', flexShrink: 0,
-            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
           }}>
             <div style={{
-              fontSize: 12, color: '#1e293b', textTransform: 'uppercase',
-              letterSpacing: '0.1em', fontFamily: 'var(--font-head)', fontWeight: 700, marginBottom: 10,
+              fontSize: 10, color: '#787878', textTransform: 'uppercase',
+              letterSpacing: '0.14em', fontFamily: 'var(--font-head)', fontWeight: 700, marginBottom: 10,
             }}>
               Biometric Parameters
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
               {paramTiles.map(tile => {
                 const st = paramStatus(tile.key, tile.raw)
-                const open = bioExpanded[tile.key] ?? false
+                const bioBorder = st.color === '#22c55e' ? '#22c55e' : '#dc2626'
                 const detail = PARAM_DETAILS[tile.key]
-                const panelId = `ddto-bio-desc-${tile.key}`
                 const sparkKey = tile.key as BiometricMetricKey
                 return (
                   <div key={tile.key} className="ddto-tile-accent" style={{
-                    background: '#fff', border: '1px solid #e2e8f0',
-                    borderLeft: `3px solid ${st.color}`,
-                    borderRadius: 7, padding: '8px 10px',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                    background: '#bebebe',
+                    borderBottom: `3px solid ${bioBorder}`,
+                    borderRadius: 4, padding: '8px 10px',
                     position: 'relative',
-                  }}>
+                  }} ref={(el) => { tileRefs.current[tile.key] = el }}>
                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                       <div style={{ flex: '0 1 auto', minWidth: 0 }}>
                         <div className="ddto-bio-metric-header">
-                          <span style={{ fontSize: 11, color: '#334155', fontWeight: 700, lineHeight: 1.38, flex: 1, minWidth: 0 }}>
+                          <span style={{ fontSize: 11, color: '#2a2a2a', fontWeight: 700, lineHeight: 1.38, flex: 1, minWidth: 0 }}>
                             {tile.label}
                           </span>
                         </div>
                         <div style={{
-                          fontSize: 21, fontWeight: 700, color: '#0f172a',
+                          fontSize: 21, fontWeight: 700, color: '#080808',
                           fontFamily: 'var(--font-mono)', marginBottom: 5, lineHeight: 1,
                           transition: 'color 0.35s ease',
                         }}>
@@ -852,8 +969,9 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
                         </div>
                         <div style={{
                           display: 'inline-block', fontSize: 10, fontWeight: 700,
-                          color: st.color, background: `${st.color}18`,
-                          padding: '2px 9px', borderRadius: 20, letterSpacing: '0.04em',
+                          color: bioBorder === '#22c55e' ? '#4ade80' : '#fca5a5',
+                          background: bioBorder === '#22c55e' ? '#14532d' : '#7f1d1d',
+                          padding: '2px 9px', borderRadius: 4, letterSpacing: '0.06em',
                           transition: 'color 0.35s ease, background-color 0.35s ease',
                         }}>
                           {st.label}
@@ -867,50 +985,12 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
                           <>
                             <button
                               type="button"
-                              className="ddto-bio-slide-trigger"
-                              aria-expanded={open}
-                              aria-controls={panelId}
-                              aria-label={open ? `Close description for ${tile.label}` : `Show description for ${tile.label}`}
-                              onClick={() => setBioExpanded(p => ({ ...p, [tile.key]: !open }))}
+                              className="ddto-bio-expand-trigger"
+                              aria-label={`Expand ${tile.label} details`}
+                              onClick={() => handleExpandMetric(tile.key)}
                             >
-                              <svg
-                                className="ddto-bio-slide-trigger-icon"
-                                width="11"
-                                height="11"
-                                viewBox="0 0 12 12"
-                                aria-hidden
-                              >
-                                <path
-                                  d="M4.25 1.75 L8.25 6 L4.25 10.25"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="1.65"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
+                              ⤢
                             </button>
-                            <div
-                              id={panelId}
-                              className={`ddto-bio-slide-panel${open ? ' ddto-bio-slide-panel--open' : ''}`}
-                              role="region"
-                              aria-label={`${tile.label} description`}
-                              aria-hidden={!open}
-                            >
-                              <div style={{
-                                fontSize: 10, fontWeight: 700, color: '#1e293b',
-                                fontFamily: 'var(--font-head)', letterSpacing: '0.04em',
-                                marginBottom: 5, lineHeight: 1.35,
-                              }}>
-                                {detail.headline}
-                              </div>
-                              <div style={{
-                                fontSize: 10, color: '#475569', lineHeight: 1.65,
-                                fontFamily: 'var(--font-ui)',
-                              }}>
-                                {detail.body}
-                              </div>
-                            </div>
                           </>
                         )}
                       </div>
@@ -929,7 +1009,7 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
 
         {/* ── RIGHT COLUMN — live data ─────────────────────────────────────── */}
         <div style={{
-          borderLeft: '1px solid #e2e8f0', background: '#f1f5f9',
+          borderLeft: '1px solid #b4b4b4', background: '#c6c6c6',
           padding: '8px 10px 8px 8px',
           display: 'flex', flexDirection: 'column', gap: 8,
           overflowY: 'auto', minHeight: 0,
@@ -937,29 +1017,29 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
 
           {/* Claude Assessment */}
           <div className="ddto-claude-border" style={{
-            background: '#fff', border: '1px solid #e2e8f0',
-            borderLeft: `3px solid ${sc(currentState)}`,
-            borderRadius: 8, padding: '10px 12px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+            background: '#d2d2d2', border: '1px solid #b4b4b4',
+            borderBottom: '3px solid #22c55e',
+            borderRadius: 6, padding: '10px 12px',
           }}>
             <div style={{
-              fontSize: 10, color: '#334155', textTransform: 'uppercase',
-              letterSpacing: '0.1em', fontFamily: 'var(--font-head)', fontWeight: 700, marginBottom: 7,
+              fontSize: 10, color: '#787878', textTransform: 'uppercase',
+              letterSpacing: '0.14em', fontFamily: 'var(--font-head)', fontWeight: 700, marginBottom: 7,
             }}>
               Claude Assessment
             </div>
             <div style={{
-              display: 'inline-block', background: '#dbeafe', color: '#1d4ed8',
-              fontSize: 10, fontWeight: 600, borderRadius: 20, padding: '2px 8px',
-              fontFamily: 'var(--font-mono)', letterSpacing: '0.02em', marginBottom: 8,
+              display: 'inline-block', background: '#14532d', color: '#4ade80',
+              fontSize: 10, fontWeight: 800, borderRadius: 4, padding: '2px 8px',
+              fontFamily: 'var(--font-mono)', letterSpacing: '0.04em', marginBottom: 8,
+              textTransform: 'uppercase',
             }}>
               claude-sonnet-4-6
             </div>
-            <div style={{ fontSize: 12, fontWeight: 500, color: '#0f172a', lineHeight: 1.7, marginBottom: 8 }}>
+            <div style={{ fontSize: 12, fontWeight: 500, color: '#2a2a2a', lineHeight: 1.7, marginBottom: 8 }}>
               {assessmentText}
             </div>
             {!isNormal && (
-              <div style={{ fontSize: 10, color: '#64748b', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: 10, color: '#787878', fontFamily: 'var(--font-mono)' }}>
                 Updated {secondsAgo}s ago
               </div>
             )}
@@ -970,35 +1050,306 @@ export const DDTODashboard: React.FC<DDTODashboardProps> = ({ loggedInOperator }
             label="Response latency"
             value={`${Math.round(latencyLive)}ms`}
             delta={latencyDelta > 0 ? `+${Math.round(latencyDelta)}ms` : `${Math.round(latencyDelta)}ms`}
-            deltaColor={latencyDelta > 60 ? '#ef4444' : latencyDelta > 30 ? '#f59e0b' : '#22c55e'}
+            deltaColor={latencyDelta > 60 ? '#dc2626' : latencyDelta > 30 ? '#f59e0b' : '#22c55e'}
           />
           <StatCard
             label="Error probability"
             value={`${(errS * 100).toFixed(1)}%`}
             delta={errorDelta > 0 ? `+${(errorDelta * 100).toFixed(1)}%` : `${(errorDelta * 100).toFixed(1)}%`}
-            deltaColor={errorDelta > 0.05 ? '#ef4444' : errorDelta > 0.02 ? '#f59e0b' : '#22c55e'}
+            deltaColor={errorDelta > 0.05 ? '#dc2626' : errorDelta > 0.02 ? '#f59e0b' : '#22c55e'}
           />
           <StatCard
             label="Plant risk"
             value={payload.risk_level.charAt(0).toUpperCase() + payload.risk_level.slice(1)}
             delta={payload.risk_level === 'high' ? 'CRITICAL' : payload.risk_level === 'medium' ? 'MODERATE' : 'NOMINAL'}
-            deltaColor={payload.risk_level === 'high' ? '#ef4444' : payload.risk_level === 'medium' ? '#f59e0b' : '#22c55e'}
+            deltaColor={payload.risk_level === 'high' ? '#dc2626' : payload.risk_level === 'medium' ? '#f59e0b' : '#22c55e'}
           />
 
           {/* Data source badge */}
           <div style={{
-            background: '#fff', border: '1px solid #e2e8f0', borderRadius: 7,
+            background: '#d2d2d2', border: '1px solid #b4b4b4', borderRadius: 6,
             padding: '6px 10px', display: 'flex', alignItems: 'center', gap: 6,
-            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
           }}>
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#3b82f6', flexShrink: 0 }} />
-            <span style={{ fontSize: 10, fontWeight: 500, color: '#475569' }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: dataSource === 'real' ? '#22c55e' : '#787878', flexShrink: 0 }} />
+            <span style={{ fontSize: 10, fontWeight: 600, color: '#2a2a2a' }}>
               {dataSource === 'real' ? 'Real EEG data active' : 'Synthetic signals active'}
             </span>
           </div>
         </div>
 
       </div>
+
+      {expandedMetric && (() => {
+        const tile = paramTiles.find(t => t.key === expandedMetric)
+        if (!tile) return null
+        const detail = PARAM_DETAILS[tile.key]
+        const st = paramStatus(tile.key, tile.raw)
+        const sparkKey = tile.key as BiometricMetricKey
+        const viewportW = window.innerWidth
+        const viewportH = window.innerHeight
+        const targetWidth = Math.min(860, Math.max(320, viewportW - 32))
+        const targetHeight = Math.min(560, Math.max(360, viewportH - 32))
+        const targetRect = {
+          left: (viewportW - targetWidth) / 2,
+          top: (viewportH - targetHeight) / 2,
+          width: targetWidth,
+          height: targetHeight,
+        }
+        const fromRect = expandedFromRect ?? targetRect
+        const cardRect = expandedAnimatingOut
+          ? fromRect
+          : (expandedAnimatingIn ? targetRect : fromRect)
+        const contentVisible = expandedAnimatingIn && !expandedAnimatingOut
+        const history = bioHist[sparkKey] ?? []
+        const minV = history.length ? Math.min(...history) : tile.raw
+        const maxV = history.length ? Math.max(...history) : tile.raw
+        const avgV = history.length ? history.reduce((s, v) => s + v, 0) / history.length : tile.raw
+        const variance = history.length
+          ? history.reduce((s, v) => s + (v - avgV) ** 2, 0) / history.length
+          : 0
+        const stdV = Math.sqrt(variance)
+        const firstV = history.length ? history[0] : tile.raw
+        const lastV = history.length ? history[history.length - 1] : tile.raw
+        const deltaV = lastV - firstV
+        const trendBand = Math.max((maxV - minV) * 0.08, 1e-4)
+        const trendLabel = deltaV > trendBand ? 'Rising' : deltaV < -trendBand ? 'Falling' : 'Stable'
+        const chartMin = Math.min(minV, avgV - stdV)
+        const chartMax = Math.max(maxV, avgV + stdV)
+        const chartRange = Math.max(chartMax - chartMin, 1e-9)
+        const chartW = 480
+        const chartH = 170
+        const chartPad = 14
+        const innerW = chartW - chartPad * 2
+        const innerH = chartH - chartPad * 2
+        const yFromValue = (v: number) =>
+          chartPad + (1 - (v - chartMin) / chartRange) * innerH
+        const pts = history.length > 1
+          ? history.map((v, i) => ({
+            x: chartPad + (i / (history.length - 1)) * innerW,
+            y: yFromValue(v),
+          }))
+          : [
+            { x: chartPad, y: yFromValue(lastV) },
+            { x: chartW - chartPad, y: yFromValue(lastV) },
+          ]
+        const pathD = smoothBezierPath(pts)
+        const baselineLow = avgV - stdV
+        const baselineHigh = avgV + stdV
+        const baselineY1 = yFromValue(Math.min(baselineLow, baselineHigh))
+        const baselineY2 = yFromValue(Math.max(baselineLow, baselineHigh))
+        const thresholds = metricThresholds(tile.key)
+        const thresholdYHigh = thresholds.high !== undefined ? yFromValue(thresholds.high) : null
+        const thresholdYLow = thresholds.low !== undefined ? yFromValue(thresholds.low) : null
+
+        return (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${tile.label} detailed view`}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: contentVisible ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0)',
+              zIndex: 9999,
+              transition: prefersReducedMotion ? 'none' : 'background 320ms ease',
+            }}
+            onClick={handleCloseExpanded}
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                position: 'fixed',
+                left: cardRect.left,
+                top: cardRect.top,
+                width: cardRect.width,
+                height: expandedAnimatingIn || expandedAnimatingOut ? cardRect.height : 'auto',
+                maxHeight: expandedAnimatingIn || expandedAnimatingOut ? cardRect.height : Math.min(viewportH - 32, 720),
+                overflowY: 'auto',
+                background: '#d2d2d2',
+                border: '1px solid #b4b4b4',
+                borderRadius: expandedAnimatingIn ? 8 : 4,
+                padding: 14,
+                boxSizing: 'border-box',
+                transition: prefersReducedMotion ? 'none' : 'left 320ms cubic-bezier(0.22, 1, 0.36, 1), top 320ms cubic-bezier(0.22, 1, 0.36, 1), width 320ms cubic-bezier(0.22, 1, 0.36, 1), height 320ms cubic-bezier(0.22, 1, 0.36, 1), border-radius 320ms cubic-bezier(0.22, 1, 0.36, 1)',
+              }}
+            >
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: 12,
+                opacity: contentVisible ? 1 : 0,
+                transition: prefersReducedMotion ? 'none' : 'opacity 180ms ease 120ms',
+              }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#080808' }}>{tile.label}</div>
+                <button
+                  type="button"
+                  onClick={handleCloseExpanded}
+                  style={{
+                    cursor: 'pointer',
+                    border: '1px solid #b4b4b4',
+                    borderRadius: 4,
+                    padding: '4px 10px',
+                    background: '#bebebe',
+                    color: '#2a2a2a',
+                    fontSize: 11,
+                    fontWeight: 700,
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+
+              <div style={{
+                background: '#bebebe',
+                borderRadius: 6,
+                padding: 10,
+                marginBottom: 12,
+                opacity: contentVisible ? 1 : 0,
+                transition: prefersReducedMotion ? 'none' : 'opacity 180ms ease 140ms',
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+                  <div>
+                    <div style={{ fontSize: 28, fontFamily: 'var(--font-mono)', fontWeight: 700, color: '#080808' }}>{tile.value}</div>
+                    <div style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      color: st.color,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                    }}>
+                      {st.label}
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 11, color: '#2a2a2a', fontWeight: 600 }}>
+                    vs session baseline: {(deltaV >= 0 ? '+' : '') + deltaV.toFixed(3)}
+                  </div>
+                </div>
+                <div style={{ height: 190, background: '#b8b8b8', borderRadius: 6, padding: 8 }}>
+                  <svg viewBox={`0 0 ${chartW} ${chartH}`} width="100%" height="100%" style={{ display: 'block' }} aria-hidden>
+                    <rect
+                      x={chartPad}
+                      y={Math.min(baselineY1, baselineY2)}
+                      width={innerW}
+                      height={Math.max(1, Math.abs(baselineY2 - baselineY1))}
+                      fill="rgba(34, 197, 94, 0.14)"
+                    />
+                    {thresholdYHigh !== null && (
+                      <line
+                        x1={chartPad}
+                        x2={chartW - chartPad}
+                        y1={thresholdYHigh}
+                        y2={thresholdYHigh}
+                        stroke="#dc2626"
+                        strokeDasharray="5 5"
+                        strokeWidth={1}
+                      />
+                    )}
+                    {thresholdYLow !== null && (
+                      <line
+                        x1={chartPad}
+                        x2={chartW - chartPad}
+                        y1={thresholdYLow}
+                        y2={thresholdYLow}
+                        stroke="#dc2626"
+                        strokeDasharray="5 5"
+                        strokeWidth={1}
+                      />
+                    )}
+                    <path
+                      d={pathD}
+                      fill="none"
+                      stroke={st.color}
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <circle
+                      cx={pts[pts.length - 1]?.x ?? chartW - chartPad}
+                      cy={pts[pts.length - 1]?.y ?? yFromValue(lastV)}
+                      r={4}
+                      fill="#d2d2d2"
+                      stroke={st.color}
+                      strokeWidth={2}
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+                gap: 8,
+                marginBottom: 12,
+                opacity: contentVisible ? 1 : 0,
+                transition: prefersReducedMotion ? 'none' : 'opacity 180ms ease 150ms',
+              }}>
+                {[
+                  { label: 'Min (5m)', value: minV.toFixed(3) },
+                  { label: 'Max (5m)', value: maxV.toFixed(3) },
+                  { label: 'Avg (5m)', value: avgV.toFixed(3) },
+                  { label: 'Trend', value: trendLabel },
+                ].map(stat => (
+                  <div key={stat.label} style={{
+                    background: '#bebebe',
+                    border: '1px solid #b4b4b4',
+                    borderRadius: 6,
+                    padding: '8px 10px',
+                  }}>
+                    <div style={{
+                      fontSize: 10,
+                      color: '#787878',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.08em',
+                      fontWeight: 700,
+                      marginBottom: 4,
+                    }}>
+                      {stat.label}
+                    </div>
+                    <div style={{ fontSize: 14, color: '#080808', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+                      {stat.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {detail && (
+                <div style={{
+                  opacity: contentVisible ? 1 : 0,
+                  transition: prefersReducedMotion ? 'none' : 'opacity 180ms ease 160ms',
+                }}>
+                  <div style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: '#080808',
+                    fontFamily: 'var(--font-head)',
+                    letterSpacing: '0.03em',
+                    marginBottom: 6,
+                  }}>
+                    {detail.headline}
+                  </div>
+                  <div style={{ fontSize: 12, lineHeight: 1.7, color: '#2a2a2a', fontFamily: 'var(--font-ui)' }}>
+                    {detail.body}
+                  </div>
+                  <div style={{
+                    marginTop: 8,
+                    padding: '8px 10px',
+                    background: '#c4c4c4',
+                    borderLeft: `3px solid ${st.color}`,
+                    borderRadius: 4,
+                    fontSize: 11,
+                    lineHeight: 1.6,
+                    color: '#1f2937',
+                    fontWeight: 600,
+                  }}>
+                    Operational hint: {metricActionHint(tile.key)}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      })()}
     </div>
   )
 }

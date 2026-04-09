@@ -28,33 +28,33 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#f8f9fb',
+      background: '#c6c6c6',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontFamily: 'var(--font-body, system-ui, sans-serif)',
+      fontFamily: 'var(--font-ui, system-ui, sans-serif)',
     }}>
       <div style={{
-        background: '#fff',
-        borderRadius: 16,
-        boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
-        padding: '40px 36px',
+        background: '#d2d2d2',
+        borderRadius: 8,
+        border: '1px solid #b4b4b4',
+        padding: '36px 32px',
         width: 360,
         maxWidth: '90vw',
       }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
           <div style={{
-            fontSize: 28,
-            fontWeight: 700,
-            color: '#1e293b',
+            fontSize: 26,
+            fontWeight: 800,
+            color: '#080808',
             fontFamily: 'var(--font-head, system-ui, sans-serif)',
             letterSpacing: '-0.02em',
             marginBottom: 6,
           }}>
             ⬡ NewTron
           </div>
-          <div style={{ fontSize: 12, color: '#94a3b8', letterSpacing: '0.04em' }}>
+          <div style={{ fontSize: 11, color: '#787878', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>
             Dynamic Digital Twin of the Operator
           </div>
         </div>
@@ -62,8 +62,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 14 }}>
             <label style={{
-              display: 'block', fontSize: 12, fontWeight: 500,
-              color: '#475569', marginBottom: 5,
+              display: 'block', fontSize: 10, fontWeight: 700,
+              color: '#787878', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.1em',
             }}>
               Username
             </label>
@@ -79,22 +79,22 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 boxSizing: 'border-box',
                 padding: '9px 12px',
                 fontSize: 13,
-                border: '1px solid #e2e8f0',
-                borderRadius: 8,
+                border: '1px solid #b4b4b4',
+                borderRadius: 6,
                 outline: 'none',
-                background: '#f8fafc',
-                color: '#1e293b',
+                background: '#bebebe',
+                color: '#080808',
                 transition: 'border-color 0.15s',
               }}
-              onFocus={e => (e.target.style.borderColor = '#3b82f6')}
-              onBlur={e => (e.target.style.borderColor = '#e2e8f0')}
+              onFocus={e => (e.target.style.borderColor = '#22c55e')}
+              onBlur={e => (e.target.style.borderColor = '#b4b4b4')}
             />
           </div>
 
           <div style={{ marginBottom: 20 }}>
             <label style={{
-              display: 'block', fontSize: 12, fontWeight: 500,
-              color: '#475569', marginBottom: 5,
+              display: 'block', fontSize: 10, fontWeight: 700,
+              color: '#787878', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.1em',
             }}>
               Password
             </label>
@@ -110,15 +110,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 boxSizing: 'border-box',
                 padding: '9px 12px',
                 fontSize: 13,
-                border: '1px solid #e2e8f0',
-                borderRadius: 8,
+                border: '1px solid #b4b4b4',
+                borderRadius: 6,
                 outline: 'none',
-                background: '#f8fafc',
-                color: '#1e293b',
+                background: '#bebebe',
+                color: '#080808',
                 transition: 'border-color 0.15s',
               }}
-              onFocus={e => (e.target.style.borderColor = '#3b82f6')}
-              onBlur={e => (e.target.style.borderColor = '#e2e8f0')}
+              onFocus={e => (e.target.style.borderColor = '#22c55e')}
+              onBlur={e => (e.target.style.borderColor = '#b4b4b4')}
             />
           </div>
 
@@ -126,11 +126,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
             <div style={{
               marginBottom: 14,
               padding: '8px 12px',
-              background: '#fef2f2',
-              border: '1px solid #fecaca',
-              borderRadius: 8,
+              background: '#7f1d1d',
+              border: '1px solid #991b1b',
+              borderRadius: 6,
               fontSize: 12,
-              color: '#dc2626',
+              color: '#fca5a5',
             }}>
               {error}
             </div>
@@ -142,15 +142,16 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
             style={{
               width: '100%',
               padding: '10px',
-              fontSize: 13,
-              fontWeight: 600,
-              background: loading ? '#93c5fd' : '#3b82f6',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 8,
+              fontSize: 12,
+              fontWeight: 800,
+              background: loading ? '#166534' : '#14532d',
+              color: '#4ade80',
+              border: '1px solid #166534',
+              borderRadius: 6,
               cursor: loading ? 'not-allowed' : 'pointer',
               transition: 'background 0.15s',
-              letterSpacing: '0.02em',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
             }}
           >
             {loading ? 'Signing in…' : 'Sign In'}
@@ -161,16 +162,16 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         <div style={{
           marginTop: 24,
           padding: '12px 14px',
-          background: '#f8fafc',
-          border: '1px solid #f1f5f9',
-          borderRadius: 10,
+          background: '#bebebe',
+          border: '1px solid #b4b4b4',
+          borderRadius: 6,
         }}>
           <div style={{
-            fontSize: 10,
-            fontWeight: 600,
-            color: '#cbd5e1',
+            fontSize: 9,
+            fontWeight: 700,
+            color: '#787878',
             textTransform: 'uppercase',
-            letterSpacing: '0.1em',
+            letterSpacing: '0.14em',
             marginBottom: 8,
           }}>
             Demo credentials
@@ -193,18 +194,19 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
             >
               <span style={{
                 fontSize: 11,
-                color: '#3b82f6',
+                color: '#22c55e',
                 fontFamily: 'var(--font-mono, monospace)',
                 textDecoration: 'underline',
                 textDecorationStyle: 'dotted',
+                fontWeight: 600,
               }}>
                 {c.user}
               </span>
-              <span style={{ fontSize: 10, color: '#94a3b8' }}>{c.role}</span>
+              <span style={{ fontSize: 10, color: '#787878' }}>{c.role}</span>
             </div>
           ))}
-          <div style={{ marginTop: 8, fontSize: 10, color: '#cbd5e1' }}>
-            Password: <span style={{ fontFamily: 'var(--font-mono, monospace)', color: '#94a3b8' }}>citech2026</span>
+          <div style={{ marginTop: 8, fontSize: 10, color: '#787878' }}>
+            Password: <span style={{ fontFamily: 'var(--font-mono, monospace)', color: '#2a2a2a', fontWeight: 600 }}>citech2026</span>
           </div>
         </div>
       </div>

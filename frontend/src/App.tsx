@@ -23,9 +23,9 @@ export default function App() {
   }
 
   const riskPillStyle: Record<RiskLevel, React.CSSProperties> = {
-    low:    { background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0' },
-    medium: { background: '#fffbeb', color: '#92400e', border: '1px solid #fde68a' },
-    high:   { background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca' },
+    low:    { background: '#14532d', color: '#4ade80', border: '1px solid #166534' },
+    medium: { background: '#78350f', color: '#fde68a', border: '1px solid #92400e' },
+    high:   { background: '#7f1d1d', color: '#fca5a5', border: '1px solid #991b1b' },
   }
 
   return (
@@ -48,12 +48,12 @@ export default function App() {
           <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
             <div style={{
               ...riskPillStyle[riskLevel],
-              fontSize: 11,
+              fontSize: 10,
               fontFamily: 'var(--font-head)',
-              fontWeight: 600,
-              letterSpacing: '0.06em',
+              fontWeight: 700,
+              letterSpacing: '0.08em',
               padding: '3px 10px',
-              borderRadius: 20,
+              borderRadius: 4,
               textTransform: 'uppercase' as const,
             }}>
               Plant Risk: {riskLevel}
@@ -63,39 +63,30 @@ export default function App() {
             </div>
 
             {/* Signed-in badge */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '3px 10px',
-              background: '#f0f7ff',
-              border: '1px solid #bfdbfe',
-              borderRadius: 20,
-              fontSize: 11,
-              color: '#1d4ed8',
-              fontFamily: 'var(--font-head)',
-              fontWeight: 500,
-            }}>
-              <span>{loggedInOperator.name}</span>
-              <span style={{ color: '#93c5fd' }}>·</span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10 }}>{loggedInOperator.badge_id}</span>
-              <span style={{ color: '#93c5fd' }}>·</span>
-              <button
-                onClick={() => setLoggedInOperator(null)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  cursor: 'pointer',
-                  color: '#3b82f6',
-                  fontSize: 11,
-                  fontFamily: 'var(--font-head)',
-                  fontWeight: 600,
-                }}
-              >
-                Sign out
-              </button>
-            </div>
+            <span style={{ fontSize: 11, color: '#7a7a7a', fontFamily: 'var(--font-head)' }}>
+              {loggedInOperator.name}
+            </span>
+            <span style={{ color: '#707070', fontSize: 11 }}>·</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: '#7a7a7a' }}>
+              {loggedInOperator.badge_id}
+            </span>
+            <button
+              onClick={() => setLoggedInOperator(null)}
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: '2px 0',
+                cursor: 'pointer',
+                color: '#ef4444',
+                fontSize: 11,
+                fontFamily: 'var(--font-head)',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+              }}
+            >
+              Sign out
+            </button>
           </div>
         </nav>
 
