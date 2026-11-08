@@ -2,12 +2,8 @@
 
 Hackathon project for **CITECH** (Cognitive Innovative Technology, Ontario Tech University): a system that models **nuclear plant operators** in real time, predicts cognitive load up to **15 minutes ahead**, and surfaces **Claude**-generated assessments—while a **simulated plant** runs in the background and feeds risk into operator load.
 
-**Team:** Summit Kabir, Urooj Fatima Khan, and Daniel Brown.
-
 For deeper architecture, operators, and signal definitions, see **[CONTEXT.md](./CONTEXT.md)**.
 
-
-Open: http://localhost:5173
 
 ### Demo Credentials
 | Operator | Username | Password |
