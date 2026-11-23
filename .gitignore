@@ -32,3 +32,7 @@ backend/data/stew_features_cache.json
 *.swp
 .DS_Store
 Thumbs.db
+
+# Runtime artefacts (history database, trained model)
+*.db
+backend/app/ddto/*.joblib

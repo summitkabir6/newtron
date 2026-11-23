@@ -43,11 +43,11 @@ def test_plant_state_roundtrip():
 
 def test_simulation_engine_tick_advances():
     eng = SimulationEngine()
-    before = eng.state.pump_a_temperature
+    eng.resume()  # engine starts paused
     eng.tick()
-    # Temperature should still be a float and engine should not crash
+    # Temperature should still be a float and the tick counter should advance
     assert isinstance(eng.state.pump_a_temperature, float)
-    assert eng.tick_count >= 1 or True  # engine may track ticks differently
+    assert eng._tick_count >= 1
 
 
 def test_ml_model_loads_and_predicts():
