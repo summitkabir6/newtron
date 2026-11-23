@@ -9,8 +9,6 @@
 
 **NewTron** is a hackathon submission for the **CITECH competition** (Cognitive Innovative Technology) run out of Ontario Tech University.
 
-The project is built by **Summit Kabir, Urooj Fatima Khan, and Daniel Brown**.
-
 The core concept is the **Dynamic Digital Twin of the Operator (DDTO)** — an AI system that monitors nuclear power plant operators in real time, builds a personal cognitive model of each operator, and predicts their cognitive state up to 15 minutes into the future before errors occur.
 
 This directly addresses the gap identified in Dr. Hossam Gabbar's 2026 IDCR paper: his system monitors the operator but cannot predict future cognitive states. NewTron does.
