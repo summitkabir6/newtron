@@ -21,6 +21,9 @@ from app.teaming.authority import determine_authority_mode
 from app.teaming.recommendations import generate_recommendation
 from app.ddto.predictor import ddto_engine
 from app.ddto.explainer import get_explanation
+from app.persistence import save_tick, init_db
+
+init_db()  # ensure tables exist on import
 
 _explanation_cache: dict = {}
 _last_payload_json: Optional[str] = None
@@ -112,6 +115,21 @@ async def run_unified_simulation_loop() -> None:
             _last_payload_json = json.dumps(payload)
             _first_broadcast_done.set()
             await connection_manager.broadcast_text(_last_payload_json)
+
+            # Persist every 5 ticks (~5 seconds) for history / playback
+            if tick % 5 == 0:
+                try:
+                    save_tick(
+                        plant_state=payload["plant_state"],
+                        risk_level=payload["risk_level"],
+                        active_scenarios=payload["active_scenarios"],
+                        causal_root_cause=payload["causal_explanation"].get("root_cause", ""),
+                        simulation_paused=payload["simulation_paused"],
+                        ddto_snapshots=payload["ddto"],
+                    )
+                except Exception as e:
+                    print(f"[Persistence] error: {e}")
+
             if tick % 60 == 0:
                 asyncio.create_task(_refresh_explanations(payload.get("risk_level", "low")))
             tick += 1

@@ -21,6 +21,7 @@ from collections import deque
 from app.ddto.profiles import get_profiles, get_profile, OperatorProfile
 from app.ddto.dataset import get_signal, get_data_source_info
 from app.ddto.lstm_stub import predict
+from app.ddto.ml_model import get_ml_prediction
 
 
 # Rolling history: 5 minutes at 1 sample/second = 300 samples
@@ -69,6 +70,13 @@ class OperatorTwin:
 
         # Run prediction on history
         prediction = predict(list(self.signal_history), self.profile)
+
+        # Optional ML model prediction (RandomForest)
+        ml_pred = get_ml_prediction(signal, self.profile)
+        if ml_pred:
+            prediction["ml_load_score"] = ml_pred.get("current_load_score")
+            prediction["ml_state"] = ml_pred.get("current_state")
+            prediction["ml_model"] = ml_pred.get("model")
 
         # Detect state transition
         new_state = prediction["current_state"]

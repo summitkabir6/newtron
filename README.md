@@ -2,7 +2,9 @@
 
 Hackathon project for **CITECH** (Cognitive Innovative Technology, Ontario Tech University): a system that models **nuclear plant operators** in real time, predicts cognitive load up to **15 minutes ahead**, and surfaces **Claude**-generated assessments—while a **simulated plant** runs in the background and feeds risk into operator load.
 
-For deeper architecture, operators, and signal definitions, see **[CONTEXT.md](./CONTEXT.md)**.
+**Enhanced version** includes SQLite persistence, historical playback APIs, a real scikit-learn RandomForest model path, Docker Compose, pytest suite, and architecture diagrams.
+
+For deeper architecture, operators, and signal definitions, see **[CONTEXT.md](./CONTEXT.md)** and **[ARCHITECTURE.md](./ARCHITECTURE.md)**.
 
 
 ### Demo Credentials
@@ -29,9 +31,11 @@ There is **no separate “Plant Twin” UI page** in this build; plant behavior 
 
 | Layer | Stack |
 |--------|--------|
-| Backend | Python, FastAPI, WebSockets |
+| Backend | Python, FastAPI, WebSockets, SQLAlchemy, scikit-learn |
 | Frontend | React, TypeScript, Vite |
-| AI | Anthropic Claude (`claude-sonnet-4-6`) — API key in `backend/.env` |
+| AI | Anthropic Claude + RandomForest cognitive model |
+| Persistence | SQLite |
+| Ops | Docker Compose, pytest |
 
 ---
 
@@ -43,7 +47,18 @@ There is **no separate “Plant Twin” UI page** in this build; plant behavior 
 
 ---
 
-## Run locally
+## Quick start with Docker
+
+```bash
+# From repository root
+docker-compose up --build
+```
+
+Then open http://localhost:5173
+
+---
+
+## Run locally (without Docker)
 
 ### Backend (port 8000)
 
@@ -77,6 +92,7 @@ Open **http://localhost:5173**. The Vite dev server proxies API calls to the bac
 |--------|--------|
 | `/` | **DDTO** — main demo (after operator login) |
 | `/console` | **Sim Console** — scenarios, overrides, reset |
+| `/history` | **History** — Recharts view of persisted cognitive load |
 
 ---
 

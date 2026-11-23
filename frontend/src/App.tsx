@@ -5,6 +5,7 @@ import { type OperatorAuth } from './services/api'
 import { DDTODashboard } from './pages/DDTODashboard'
 import { SimulationConsole } from './pages/SimulationConsole'
 import { LoginScreen } from './pages/LoginScreen'
+import { HistoryPage } from './pages/HistoryPage'
 
 export default function App() {
   const [connected, setConnected] = useState(false)
@@ -42,6 +43,9 @@ export default function App() {
           </NavLink>
           <NavLink to="/console" className={({ isActive }) => isActive ? 'active' : ''}>
             Sim Console
+          </NavLink>
+          <NavLink to="/history" className={({ isActive }) => isActive ? 'active' : ''}>
+            History
           </NavLink>
 
           {/* Right side pills */}
@@ -94,6 +98,7 @@ export default function App() {
           <Routes>
             <Route path="/"        element={<DDTODashboard loggedInOperator={loggedInOperator} />} />
             <Route path="/console" element={<SimulationConsole />} />
+            <Route path="/history" element={<HistoryPage />} />
           </Routes>
         </div>
       </div>
