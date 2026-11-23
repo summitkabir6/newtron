@@ -1,41 +1,33 @@
+<div align="center">
+
 # NewTron
+
+**A dynamic digital twin of the nuclear plant operator**
+
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-WebSockets-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+
+[Demo Video](https://github.com/user-attachments/assets/c3966e74-b960-4289-bc06-189da769a018) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [API Reference](#-api-reference) · [Known Issues](#-known-issues)
+
+</div>
 
 https://github.com/user-attachments/assets/c3966e74-b960-4289-bc06-189da769a018
 
-**A dynamic digital twin of the nuclear plant operator.** NewTron models each control-room operator against their own cognitive baseline, forecasts their cognitive state up to 15 minutes ahead, and explains the forecast in plain English, so a supervisor can act before an error happens rather than after.
-
-Built for the CITECH (Cognitive Innovative Technology) competition at Ontario Tech University.
-
-![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
-![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?logo=scikitlearn&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
-
 ---
 
-## Contents
+## 🧠 Overview
 
-- [Why it exists](#why-it-exists)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Getting started](#getting-started)
-- [Using the demo](#using-the-demo)
-- [API reference](#api-reference)
-- [How the prediction works](#how-the-prediction-works)
-- [Testing](#testing)
-- [Project structure](#project-structure)
-- [Limitations](#limitations)
-- [Acknowledgements](#acknowledgements)
+NewTron models each control-room operator against their own cognitive baseline, forecasts their cognitive state up to 15 minutes ahead, and explains the forecast in plain English, so a supervisor can act before an error happens rather than after.
 
----
+> *"In 15 minutes, this operator hits critical."* NewTron says so before it happens.
 
-## Why it exists
+### ✨ Why NewTron?
 
 Control-room monitoring systems watch the plant closely and the operator barely at all. Those that do monitor the operator compare them against population-wide thresholds and report only the present moment.
 
-NewTron takes a different position on three points:
+NewTron takes a different position on four points:
 
 | Conventional monitoring | NewTron |
 |---|---|
@@ -44,18 +36,24 @@ NewTron takes a different position on three points:
 | Reports current state | Forecasts state 5, 10 and 15 minutes ahead |
 | One operator at a time | A crew-level index that captures compounding risk |
 
-## Features
+---
 
-- **Per-operator digital twin.** Three operators are modelled simultaneously, each with their own experience level, fatigue rate and automation-bias tendency. Every reading is scored as a deviation from that operator's own normal.
-- **15-minute cognitive forecast.** A sequence predictor projects load at 5, 10 and 15 minutes with a trend and a confidence value, mapped onto five states from `normal` to `critical`.
-- **Machine-learning model path.** A scikit-learn `RandomForestRegressor` scores the same signals alongside the sequence predictor and reports its own metrics.
-- **Crew Cognitive State Index (CCSI).** A single 0 to 100 score for the whole crew, with a compound penalty when two or more operators degrade at the same time.
-- **Plain-English assessments.** Anthropic Claude turns each operator's signals and forecast into a short assessment. A deterministic fallback is used when no API key is set.
-- **Simulated plant.** A reactor cooling subsystem with a causal graph, fault scenarios and manual overrides. Plant risk feeds directly into operator load.
-- **Persistence and history.** Plant ticks and operator snapshots are written to SQLite every five seconds and served through history endpoints and a History page.
-- **Optional real EEG data.** When the STEW dataset is present, real EEG band powers replace the synthetic ones and the dashboard labels the data source accordingly.
+## 🚀 Features
 
-## Architecture
+| Feature | Description |
+|---|---|
+| **Per-operator digital twin** | Three operators are modelled simultaneously, each with their own experience level, fatigue rate and automation-bias tendency. Every reading is scored as a deviation from that operator's own normal. |
+| **15-minute cognitive forecast** | A sequence predictor projects load at 5, 10 and 15 minutes with a trend and a confidence value, mapped onto five states from `normal` to `critical`. |
+| **Machine-learning model path** | A scikit-learn `RandomForestRegressor` scores the same signals alongside the sequence predictor and reports its own metrics. |
+| **Crew Cognitive State Index (CCSI)** | A single 0 to 100 score for the whole crew, with a compound penalty when two or more operators degrade at the same time. |
+| **Plain-English assessments** | Anthropic Claude turns each operator's signals and forecast into a short assessment. A deterministic fallback is used when no API key is set. |
+| **Simulated plant** | A reactor cooling subsystem with a causal graph, fault scenarios and manual overrides. Plant risk feeds directly into operator load. |
+| **Persistence and history** | Plant ticks and operator snapshots are written to SQLite every five seconds and served through history endpoints and a History page. |
+| **Optional real EEG data** | When the STEW dataset is present, real EEG band powers replace the synthetic ones and the dashboard labels the data source accordingly. |
+
+---
+
+## 📐 Architecture
 
 ```mermaid
 flowchart LR
@@ -95,16 +93,48 @@ flowchart LR
 
 Once per second the backend advances the plant simulation, runs every operator twin, computes the crew index and broadcasts one combined payload to all connected clients. Sequence diagrams, the data model and the state machine are in [ARCHITECTURE.md](./ARCHITECTURE.md). Operator profiles and signal definitions are in [CONTEXT.md](./CONTEXT.md).
 
-| Layer | Technology |
-|---|---|
-| Backend | Python, FastAPI, WebSockets, SQLAlchemy |
-| Modelling | scikit-learn, NumPy |
-| Explanations | Anthropic Claude via the Messages API |
-| Frontend | React 18, TypeScript, Vite, Recharts |
-| Storage | SQLite |
-| Tooling | Docker Compose, pytest |
+---
 
-## Getting started
+## 🧰 Tech Stack
+
+<div align="center">
+
+### Frontend
+
+![React](https://img.shields.io/badge/React-18-20232A?style=for-the-badge&logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Recharts](https://img.shields.io/badge/Recharts-2-22B5BF?style=for-the-badge)
+
+### Backend
+
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![WebSockets](https://img.shields.io/badge/WebSockets-1_Hz-010101?style=for-the-badge&logo=socketdotio&logoColor=white)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+
+### AI & Modelling
+
+![Claude](https://img.shields.io/badge/Anthropic-Claude-D97757?style=for-the-badge&logo=anthropic&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-RandomForest-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)
+
+### Tooling
+
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![pytest](https://img.shields.io/badge/pytest-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white)
+
+</div>
+
+---
+
+## 🏃 Quick Start
+
+```bash
+git clone https://github.com/summitkabir6/newtron.git
+cd newtron
+```
 
 ### Prerequisites
 
@@ -151,7 +181,9 @@ The Vite dev server proxies API calls to the backend.
 
 `backend/.env` is git-ignored. Do not commit API keys.
 
-## Using the demo
+---
+
+## 🎯 Usage
 
 1. Open the frontend on port 5173 and sign in as one of the demo operators.
 
@@ -174,7 +206,9 @@ The Vite dev server proxies API calls to the backend.
 | `/console` | Simulation console |
 | `/history` | Historical cognitive load |
 
-## API reference
+---
+
+## 📡 API Reference
 
 Interactive documentation is served by the backend at `/docs`.
 
@@ -223,7 +257,9 @@ Interactive documentation is served by the backend at `/docs`.
 
 The full WebSocket payload is typed in [`frontend/src/services/websocket.ts`](frontend/src/services/websocket.ts).
 
-## How the prediction works
+---
+
+## 🔬 How the Prediction Works
 
 **Signals.** Each tick produces a reading per operator across three groups:
 
@@ -253,7 +289,9 @@ The full WebSocket payload is typed in [`frontend/src/services/websocket.ts`](fr
 
 NewTron runs on synthetic signals by default. To use real EEG recordings, download the [STEW dataset](https://figshare.com/articles/dataset/STEW_Dataset_Raw_EEG_Data/6198183) and place the CSV files (`sub01_lo.csv`, `sub01_hi.csv`, and so on) in `backend/data/STEW/`. The backend detects them at startup, extracts band powers and caches the result. Eye-tracking and performance signals remain synthetic.
 
-## Testing
+---
+
+## 🧪 Testing
 
 ```bash
 cd backend
@@ -262,7 +300,9 @@ pytest
 
 The suite covers state thresholds, the forecast contract, plant state serialisation, the simulation tick and the RandomForest model.
 
-## Project structure
+---
+
+## 📁 Project Structure
 
 ```
 newtron/
@@ -292,7 +332,9 @@ newtron/
 └── CONTEXT.md
 ```
 
-## Limitations
+---
+
+## 🐛 Known Issues
 
 NewTron is a research prototype and a competition demo. It is not a safety system.
 
@@ -302,7 +344,23 @@ NewTron is a research prototype and a competition demo. It is not a safety syste
 - **Authentication is for demonstration.** Credentials are fixed and there is no session security.
 - **Nothing here has been validated** against real operators or in a real control room.
 
-## Acknowledgements
+---
+
+## 🙏 Acknowledgments
 
 - CITECH, Ontario Tech University, for the competition and the problem framing.
 - Lim, W. L., Sourina, O., and Wang, L. P. (2018). *STEW: Simultaneous Task EEG Workload Data Set.* IEEE Transactions on Neural Systems and Rehabilitation Engineering.
+
+---
+
+## 📧 Contact
+
+Summit Kabir · [@summitkabir6](https://github.com/summitkabir6)
+
+Project link: [github.com/summitkabir6/newtron](https://github.com/summitkabir6/newtron)
+
+---
+
+<div align="center">
+  <sub>Built for the CITECH competition at Ontario Tech University</sub>
+</div>
