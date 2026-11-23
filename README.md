@@ -1,5 +1,7 @@
 # NewTron
 
+https://github.com/user-attachments/assets/c3966e74-b960-4289-bc06-189da769a018
+
 **A dynamic digital twin of the nuclear plant operator.** NewTron models each control-room operator against their own cognitive baseline, forecasts their cognitive state up to 15 minutes ahead, and explains the forecast in plain English, so a supervisor can act before an error happens rather than after.
 
 Built for the CITECH (Cognitive Innovative Technology) competition at Ontario Tech University.
